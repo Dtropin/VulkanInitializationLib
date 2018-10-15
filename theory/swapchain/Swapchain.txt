@@ -1,0 +1,16 @@
+Swapchains are a mechanism by which the rendering of the drawing primitive is shown on
+a platform-specific presentation window/surface. A swapchain may contain single or
+multiple drawing images. These drawing images are called color images. A color image is
+simply an array of pixel information that resides in a special layout in the memory
+
+When double images are used, it's called double buffering, and when three surfaces are used,
+triple buffering.
+
+Among these images, when one image completes the drawing process in the background, it
+is swapped to the presentation window. In order to fully utilize the GPU, a different image
+is then treated as a background buffer for the drawing process
+
+The swapping or flipping of the drawing image is dependent upon the presentation mode;
+this may be updated during the Vertical Blanking Interval (VBI) or as soon as the drawing
+is made available. This means that when the monitor is refreshed, the background image is
+swapped with the front image displaying the new image

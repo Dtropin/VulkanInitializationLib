@@ -1,0 +1,18 @@
+1) Create empty native platworm window that will be connected to swapchain
+
+2) Query swapchain extensions. Swapchain not part of Vulkan and it is platform dependent,
+so vulkan has only interfaces(function pointers) predefined in
+vulkan specification, and vendors must implement this spec. Then in app we link Vulkan Api(function pointers) to implementation
+of swapchain api
+
+3) Create surface and associate it with created window. It Creates a logical platform-specific surface object.
+
+4) Getting supported image formats.
+
+5) Get swapchain image surface capabilities
+
+6) Set present mode
+
+7) Use above gathered info and create swapchain images (VkImage)
+
+8) Create VkImageView to grant access to images
