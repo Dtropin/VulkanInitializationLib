@@ -59,17 +59,17 @@ file(GLOB SOURCES
         core/outputwindow/init/*.cpp
         core/outputwindow/*.h
         core/outputwindow/*.cpp
-        core/modules/layersAndExtensions/LayersAndExtensionsManager.cpp
-        core/modules/layersAndExtensions/LayersAndExtensionsManager.h
-        core/logic/layersAndExtensions/LayersAndExtensionsManagerFactory.cpp
-        core/logic/layersAndExtensions/LayersAndExtensionsManagerFactory.h
+        core/modules/layersAndExtensions/VkInstanceLayersWrapper.cpp
+        core/modules/layersAndExtensions/VkInstanceLayersWrapper.h
+        core/logic/layersAndExtensions/VkInstanceLayersProvider.cpp
+        core/logic/layersAndExtensions/VkInstanceLayersProvider.h
         )
 
 set(SOURCE_FILES
         ${VULKAN_INCLUDE_DIR}
         ${GLWF_INCLUDE_DIR}
         ${GLM_INCLUDE_DIR}
-        ${SOURCES} core/modules/physicalDevice/VkPhysicalDeviceRepresentation.cpp core/modules/physicalDevice/VkPhysicalDeviceRepresentation.h core/modules/layersAndExtensions/LayersPrintUtil.h)
+        ${SOURCES} core/modules/physicalDevice/VkPhysicalDeviceWrapper.cpp core/modules/physicalDevice/VkPhysicalDeviceWrapper.h core/modules/layersAndExtensions/LayersPrintUtil.h core/logic/ioc/IocContainer.cpp core/logic/ioc/IocContainer.h core/initrequestmodel/VulkanInitalizationRequestModel.h core/modules/vkinstance/VkInstanceWrapper.cpp core/modules/vkinstance/VkInstanceWrapper.h core/logic/physicalDevice/VkPhysicalDeviceExtensionsExtractor.cpp core/logic/physicalDevice/VkPhysicalDeviceExtensionsExtractor.h core/logic/physicalDevice/VkPhysicalDevicePropertiesExtractor.cpp core/logic/physicalDevice/VkPhysicalDevicePropertiesExtractor.h)
 
 add_executable(VulkanInitializationLib ${SOURCE_FILES})
 

@@ -6,9 +6,9 @@
 
 #include <vulkan.h>
 
-class VkLogicalDeviceRepresentation {
+class VkDeviceRepresentation {
 public:
-    VkLogicalDeviceRepresentation(VkDevice *, int graphicsQueueIdx);
+    VkDeviceRepresentation(VkDevice *, int graphicsQueueIdx);
 
     VkDevice *getVkLogicalDevice() const;
 
@@ -17,7 +17,8 @@ public:
     uint32_t getPresentQueueIdx() const;
 
 private:
+    // physical device data
     VkDevice *vkLogicalDevice;//interface to physical device
-    uint32_t graphicsQueueIdx; //Idx of graphics queue
+   uint32_t graphicsQueueIdx; //Idx of graphics queue
     uint32_t presentQueueIdx; //Idx of graphics queue
 };

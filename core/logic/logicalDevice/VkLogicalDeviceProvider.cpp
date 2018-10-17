@@ -6,18 +6,14 @@
 #include <iostream>
 #include <utility>
 #include <set>
-#include "VkLogicalDeviceManager.h"
+#include "VkLogicalDeviceProvider.h"
 #include "../queueFamilies/QueueFamiliesController.h"
 
-VkLogicalDeviceManager &VkLogicalDeviceManager::getInstance() {
-    static VkLogicalDeviceManager initializer;
-    return initializer;
-}
-
-VkLogicalDeviceRepresentation *VkLogicalDeviceManager::getOrCreate(VkPhysicalDeviceRepresentation *deviceRepresentation,
-                                                                   std::vector<const char *> deviceExtensionsToEnable,
-                                                                   std::vector<std::function<bool(
-                                                                           VkQueueFamilyProperties)>> queueFamilyPeekFunction) {
+VkDeviceRepresentation *VkLogicalDeviceProvider::createLogicalDevice(
+        VkPhysicalDeviceWrapper *deviceRepresentation,
+        std::vector<const char *> deviceExtensionsToEnable,
+        std::vector<std::function<bool(
+                VkQueueFamilyProperties)>> queueFamilyPeekFunction) {
     //Info about what queues need to create for this device
     std::vector<VkDeviceQueueCreateInfo *> queueCreateInfos = createDeviceQueueCreateInfo(
             deviceRepresentation->getQueueFamiliesProperties(),
@@ -26,22 +22,22 @@ VkLogicalDeviceRepresentation *VkLogicalDeviceManager::getOrCreate(VkPhysicalDev
     VkDeviceCreateInfo *deviceCreateInfo = createDeviceCreateInfo(queueCreateInfos, deviceExtensionsToEnable);
 
     auto *device = new VkDevice;
-	
-	VkResult res = vkCreateDevice(*deviceRepresentation->getVkPhysicalDevice(),
-		deviceCreateInfo, nullptr, device);
-    
-	if (res != VK_SUCCESS)
+
+    VkResult res = vkCreateDevice(*deviceRepresentation->getVkPhysicalDevice(),
+                                  deviceCreateInfo, nullptr, device);
+
+    if (res != VK_SUCCESS)
         throw std::runtime_error("failed to create logical device!");
 
-    auto *logicalDevice = new VkLogicalDeviceRepresentation(device, queueCreateInfos.data()[0]->queueFamilyIndex);
+    auto *logicalDevice = new VkDeviceRepresentation(device, queueCreateInfos.data()[0]->queueFamilyIndex);
     this->cachedDevice = logicalDevice;
     return cachedDevice;
 }
 
 
 VkDeviceCreateInfo *
-VkLogicalDeviceManager::createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo *> queueCreateInfos,
-                                               std::vector<const char *> &deviceExtensionsToEnable) {
+VkLogicalDeviceProvider::createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo *> queueCreateInfos,
+                                                std::vector<const char *> &deviceExtensionsToEnable) {
     auto *createInfo = new VkDeviceCreateInfo();
     createInfo->sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     createInfo->pQueueCreateInfos = *queueCreateInfos.data();
@@ -55,9 +51,9 @@ VkLogicalDeviceManager::createDeviceCreateInfo(std::vector<VkDeviceQueueCreateIn
 }
 
 std::vector<VkDeviceQueueCreateInfo *>
-VkLogicalDeviceManager::createDeviceQueueCreateInfo(std::vector<VkQueueFamilyProperties> *queueFamiliesProperties,
-                                                    std::vector<std::function<bool(
-                                                            VkQueueFamilyProperties)>> queueFamilyPeekFunction) {
+VkLogicalDeviceProvider::createDeviceQueueCreateInfo(std::vector<VkQueueFamilyProperties> *queueFamiliesProperties,
+                                                     std::vector<std::function<bool(
+                                                             VkQueueFamilyProperties)>> queueFamilyPeekFunction) {
     std::vector<VkDeviceQueueCreateInfo *> vector;
 
     for (const auto &i : queueFamilyPeekFunction) {
@@ -74,5 +70,11 @@ VkLogicalDeviceManager::createDeviceQueueCreateInfo(std::vector<VkQueueFamilyPro
     }
 
     return vector;
+}
+
+VkDeviceRepresentation *VkLogicalDeviceProvider::create(VkPhysicalDeviceWrapper *,
+                                                        std::vector<const char *>,
+                                                        std::vector<std::function<bool(VkQueueFamilyProperties)>>) {
+    return NULL;
 }
 

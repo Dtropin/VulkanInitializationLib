@@ -1,8 +1,8 @@
 #pragma once
 #include <vulkan.h>
-#include "../../modules/logicalDevice/VkLogicalDeviceRepresentation.h"
+#include "../../modules/logicalDevice/VkDeviceRepresentation.h"
 
 class CommandPoolInitializer {
 public:
-	static VkCommandPool* createCommandPool(VkLogicalDeviceRepresentation* deviceRepresentation);
+	static VkCommandPool* createCommandPool(VkDeviceRepresentation* deviceRepresentation);
 };

@@ -8,75 +8,87 @@
 #include <iostream>
 #include <vector>
 #include "VulkanInitializationEntryPoint.h"
-#include "../modules/physicalDevice/VkPhysicalDeviceRepresentation.h"
-#include "physicalDevice/VkPhysicalDeviceManager.h"
-#include "logicalDevice/VkLogicalDeviceManager.h"
+#include "../modules/physicalDevice/VkPhysicalDeviceWrapper.h"
+#include "logicalDevice/VkLogicalDeviceProvider.h"
 #include "command/CommandPoolInitializer.h"
 #include "swapChain/VkSwapChainManager.h"
 #include "renderPass/RenderPassInitializer.h"
 #include "graphicsPipeline/GraphicsPipelineInitializer.h"
 #include "swapChain/FrameBuffersManager.h"
 #include "../modules/commands/CommandBufferManager.h"
-#include "vkInstance/VkInstanceManager.h"
+#include "vkInstance/VkInstanceProvider.h"
 
 VulkanInitializationEntryPoint &VulkanInitializationEntryPoint::getInstance() {
     static VulkanInitializationEntryPoint initializer;
     return initializer;
 }
 
-VulkanInitializationEntryPoint::VulkanInitializationEntryPoint() = default;
+VulkanInitializationEntryPoint::VulkanInitializationEntryPoint()
+        : iocContainer(&IocContainer::getInstance()) {}
 
-//TODO WRAP THIS PROJECT TO LIBRARY
+VulkanInitializationRequest debugRequest() {
+    VulkanInitializationRequest request;
 
+    VulkanInitializationRequest::PhysicalDeviceRequirements pdr;
 
-VulkanInterface* VulkanInitializationEntryPoint::initializeVulkanSystem(OutputWindowInterface *windowInterface) {
-    if(!isSystemAlreadyInitialized.test_and_set()) {
-        VkInstance* vkInstance = initVkInstance(windowInterface);
+    request.physicalDeviceRequirements.requiredDeviceExtensions = {
+            //VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
 
-        std::vector<VkPhysicalDeviceRepresentation>* vkPhysicalDevices = VkPhysicalDeviceManager::getInstance().getOrCreate(vkInstance);
-        
-		std::vector<const char *> deviceExtensionsToEnable = {
-                VK_KHR_SWAPCHAIN_EXTENSION_NAME
-		};
+    request.physicalDeviceRequirements.queueFamilyRequirementFunctions.emplace_back([](VkQueueFamilyProperties prop) {
+        return prop.queueFlags & VK_QUEUE_GRAPHICS_BIT;
+    });
 
-		std::vector<std::function<bool(VkQueueFamilyProperties)>>queueFamilyPeekFunction;
-
-        queueFamilyPeekFunction.emplace_back([](VkQueueFamilyProperties prop) {
-            return prop.queueFlags & VK_QUEUE_GRAPHICS_BIT;
-        });
-
-        VkPhysicalDeviceRepresentation* pickedPhysicalDevice = &vkPhysicalDevices[0][0];
-
-        VkLogicalDeviceRepresentation* logicalDevice = VkLogicalDeviceManager::getInstance()
-                .getOrCreate(pickedPhysicalDevice, deviceExtensionsToEnable, queueFamilyPeekFunction);
-
-        VkCommandPool* commandPool = CommandPoolInitializer::
-                createCommandPool(logicalDevice);
-
-		VkSurfaceKHR * vkSurface = windowInterface->getWindowSurface(vkInstance);
-
-		SwapChainHandler* swapchain = VkSwapChainManager::getInstance().createSwapChain(
-		        *pickedPhysicalDevice->getVkPhysicalDevice(),
-		        *vkSurface, logicalDevice);
-
-        VkRenderPass renderPass = RenderPassInitializer::createRenderPass(*swapchain, *logicalDevice->getVkLogicalDevice());
-        GraphicsPipelineInterface* pipelineLayout = GraphicsPipelineInitializer::createGraphicsPipeline(*logicalDevice->getVkLogicalDevice(), *swapchain, renderPass);
-		std::vector<VkFramebuffer> * frameBuffers = FrameBuffersManager::createFrameBuffers(swapchain, *logicalDevice->getVkLogicalDevice(), renderPass);
-
-		std::vector<VkCommandBuffer>* commandBuffers = CommandBufferManager::createCommandBuffers(frameBuffers, *commandPool, *logicalDevice->getVkLogicalDevice(), renderPass, swapchain, pipelineLayout);
-
-		return new VulkanInterface(vkInstance, logicalDevice, vkSurface, swapchain, pipelineLayout, renderPass, frameBuffers, *commandPool, commandBuffers);
-    } else {
-        throw std::runtime_error("vulkan instance already created");
-    }
+    return request;
 }
 
-VkInstance *VulkanInitializationEntryPoint::initVkInstance(OutputWindowInterface *windowInterface) {
-    std::vector<const char*> vkInstanceLayersToEnable;
-   // vkInstanceLayersToEnable.push_back("VK_LAYER_LUNARG_api_dump");
-    std::vector<const char*> vkInstanceExtensionsToEnable;
+VulkanInterface *VulkanInitializationEntryPoint::setupVulkanSystem(OutputWindowInterface *windowInterface) {
+    //into args
+    auto request = debugRequest();
 
-    ApplicationMetadata applicationMetadata("VulkanLib", "No engine", 1, 1, vkInstanceExtensionsToEnable, vkInstanceLayersToEnable);
+    //TODO Валидатор для instance layers, поддерживаются ли они системой
 
-    return VkInstanceFactory::getInstance().getOrCreate(windowInterface, std::move(applicationMetadata));
+    std::shared_ptr<VkInstanceLayersProvider> vkInstanceLayersProvider = iocContainer->getVkInstanceLayersProvider();
+    std::unique_ptr<VkInstanceLayersWrapper> vkInstanceLayers = vkInstanceLayersProvider->getInstanceLayersAndExtensions();
+
+    std::shared_ptr<VkInstanceProvider> vkInstanceProvider = iocContainer->getVkInstanceProvider();
+    std::unique_ptr<VkInstance> vkInstance = vkInstanceProvider->create(windowInterface, &request.vkInstanceData);
+
+    std::shared_ptr<VkPhysicalDeviceDetector> vkPhysicalDeviceProvider = iocContainer->getVkPhysicalDeviceDetector();
+    std::unique_ptr<VkPhysicalDeviceWrapper> appropriatePhysicalDevice = vkPhysicalDeviceProvider->findSatisfyingDevices(
+            vkInstance.get(), vkInstanceLayers.get(), request.physicalDeviceRequirements);
+
+    //const VkLogicalDeviceProvider* vkLogicalDeviceProvider = iocContainer->getVkLogicalDeviceProvider();
+    //vkLogicalDeviceProvider->create();
+
+    /**
+
+    VkDeviceRepresentation *logicalDevice = VkDeviceProvider
+            .getOrCreate(availiablePhysicalDevices, deviceExtensionsToEnable, queueFamilyPeekFunction);
+
+    VkCommandPool *commandPool = CommandPoolInitializer::
+    createCommandPool(logicalDevice);
+
+    VkSurfaceKHR *vkSurface = windowInterface->getWindowSurface(vkInstance);
+
+    SwapChainHandler *swapchain = VkSwapChainManager::getInstance().createSwapChain(
+            *pickedPhysicalDevice->getVkPhysicalDevice(),
+            *vkSurface, logicalDevice);
+
+    VkRenderPass renderPass = RenderPassInitializer::createRenderPass(*swapchain, *logicalDevice->getVkLogicalDevice());
+    GraphicsPipelineInterface *pipelineLayout = GraphicsPipelineInitializer::createGraphicsPipeline(
+            *logicalDevice->getVkLogicalDevice(), *swapchain, renderPass);
+    std::vector<VkFramebuffer> *frameBuffers = FrameBuffersManager::createFrameBuffers(swapchain,
+                                                                                       *logicalDevice->getVkLogicalDevice(),
+                                                                                       renderPass);
+
+    std::vector<VkCommandBuffer> *commandBuffers = CommandBufferManager::createCommandBuffers(frameBuffers,
+                                                                                              *commandPool,
+                                                                                              *logicalDevice->getVkLogicalDevice(),
+                                                                                              renderPass, swapchain,
+                                                                                              pipelineLayout);
+
+    return new VulkanInterface(vkInstance, logicalDevice, vkSurface, swapchain, pipelineLayout, renderPass,
+                               frameBuffers, *commandPool, commandBuffers);**/
+    return nullptr;
 }

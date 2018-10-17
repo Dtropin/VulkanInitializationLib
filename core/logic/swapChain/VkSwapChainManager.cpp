@@ -13,7 +13,7 @@ VkSwapChainManager &VkSwapChainManager::getInstance() {
 }
 
 SwapChainHandler* VkSwapChainManager::createSwapChain(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
-        VkLogicalDeviceRepresentation* logicalDevice) {
+        VkDeviceRepresentation* logicalDevice) {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
     VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);

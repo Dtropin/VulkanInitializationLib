@@ -13,7 +13,7 @@ int GameApplicationRunner::runGame() {
         OutputWindowInterface* window = windowInitializer->createWindow();
 		
         VulkanInterface* vulkanInstanceHandler = VulkanInitializationEntryPoint::getInstance()
-                .initializeVulkanSystem(window);
+                .setupVulkanSystem(window);
 
 /**
 		VkSemaphoreCreateInfo semaphoreInfo = {};
@@ -28,7 +28,8 @@ int GameApplicationRunner::runGame() {
 		vkDestroySemaphore(*vulkanInstanceHandler->logicalDevice->getVkLogicalDevice(), renderFinishedSemaphore, nullptr);
 		vkDestroySemaphore(*vulkanInstanceHandler->logicalDevice->getVkLogicalDevice(), imageAvailableSemaphore, nullptr);
 **/
-        delete window;  
+        delete window;
+        if(vulkanInstanceHandler != nullptr)
         delete vulkanInstanceHandler;
         return 0;
     } else {
