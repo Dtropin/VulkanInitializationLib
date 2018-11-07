@@ -24,12 +24,12 @@ public:
 
     std::shared_ptr<VkPhysicalDeviceExtensionsExtractor> getDeviceExtensionsExtractor();
 
-    const VkLogicalDeviceProvider *getVkLogicalDeviceProvider();
+    std::shared_ptr<VkLogicalDeviceProvider> getVkLogicalDeviceProvider();
 
 private:
     IocContainer();
 
-    VkLogicalDeviceProvider vkLogicalDeviceProvider;
+    std::shared_ptr<VkLogicalDeviceProvider> vkLogicalDeviceProvider;
 
     std::shared_ptr<VkPhysicalDeviceExtensionsExtractor> deviceExtensionsExtractor;
 

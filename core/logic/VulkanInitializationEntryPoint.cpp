@@ -58,8 +58,8 @@ VulkanInterface *VulkanInitializationEntryPoint::setupVulkanSystem(OutputWindowI
     std::unique_ptr<VkPhysicalDeviceWrapper> appropriatePhysicalDevice = vkPhysicalDeviceProvider->findSatisfyingDevices(
             vkInstance.get(), vkInstanceLayers.get(), request.physicalDeviceRequirements);
 
-    //const VkLogicalDeviceProvider* vkLogicalDeviceProvider = iocContainer->getVkLogicalDeviceProvider();
-    //vkLogicalDeviceProvider->create();
+    std::shared_ptr<VkLogicalDeviceProvider> vkLogicalDeviceProvider = iocContainer->getVkLogicalDeviceProvider();
+    vkLogicalDeviceProvider->create(appropriatePhysicalDevice, );
 
     /**
 

@@ -6,21 +6,19 @@
 #include <vulkan.h>
 #include <mutex>
 #include <atomic>
-#include "../../modules/logicalDevice/VkDeviceRepresentation.h"
+#include "../../modules/logicalDevice/VkLogicalDeviceRepresentation.h"
 #include "../../modules/physicalDevice/VkPhysicalDeviceWrapper.h"
 
 class VkLogicalDeviceProvider {
     friend class IocContainer;
 
 public:
-    VkDeviceRepresentation *create(VkPhysicalDeviceWrapper *,
+    std::unique_ptr<VkLogicalDeviceRepresentation> create(VkPhysicalDeviceWrapper*,
                                                 std::vector<const char *>,
                                                 std::vector<std::function<bool(VkQueueFamilyProperties)>>);
 
 private:
     VkLogicalDeviceProvider() = default;
-
-    VkDeviceRepresentation *cachedDevice;
 
     VkDeviceCreateInfo *
     createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo *>, std::vector<const char *> &deviceExtensionsToEnable);
@@ -28,10 +26,4 @@ private:
     std::vector<VkDeviceQueueCreateInfo *>
     createDeviceQueueCreateInfo(std::vector<VkQueueFamilyProperties> *queueFamiliesProperties,
                                 std::vector<std::function<bool(VkQueueFamilyProperties)>> queueFamilyPeekFunction);
-
-    VkDeviceRepresentation *createLogicalDevice(
-            VkPhysicalDeviceWrapper *deviceRepresentation,
-            std::vector<const char *> deviceExtensionsToEnable,
-            std::vector<std::function<bool(
-                    VkQueueFamilyProperties)>> queueFamilyPeekFunction);
 };

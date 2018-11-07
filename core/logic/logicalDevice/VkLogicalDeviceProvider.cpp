@@ -5,35 +5,11 @@
 #include <stdexcept>
 #include <iostream>
 #include <utility>
+#include <string>
 #include <set>
 #include "VkLogicalDeviceProvider.h"
+#include "../../utils/VulkanInitializationErrorMessageUtils.h"
 #include "../queueFamilies/QueueFamiliesController.h"
-
-VkDeviceRepresentation *VkLogicalDeviceProvider::createLogicalDevice(
-        VkPhysicalDeviceWrapper *deviceRepresentation,
-        std::vector<const char *> deviceExtensionsToEnable,
-        std::vector<std::function<bool(
-                VkQueueFamilyProperties)>> queueFamilyPeekFunction) {
-    //Info about what queues need to create for this device
-    std::vector<VkDeviceQueueCreateInfo *> queueCreateInfos = createDeviceQueueCreateInfo(
-            deviceRepresentation->getQueueFamiliesProperties(),
-            std::move(queueFamilyPeekFunction));
-    //Info about device going to create
-    VkDeviceCreateInfo *deviceCreateInfo = createDeviceCreateInfo(queueCreateInfos, deviceExtensionsToEnable);
-
-    auto *device = new VkDevice;
-
-    VkResult res = vkCreateDevice(*deviceRepresentation->getVkPhysicalDevice(),
-                                  deviceCreateInfo, nullptr, device);
-
-    if (res != VK_SUCCESS)
-        throw std::runtime_error("failed to create logical device!");
-
-    auto *logicalDevice = new VkDeviceRepresentation(device, queueCreateInfos.data()[0]->queueFamilyIndex);
-    this->cachedDevice = logicalDevice;
-    return cachedDevice;
-}
-
 
 VkDeviceCreateInfo *
 VkLogicalDeviceProvider::createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo *> queueCreateInfos,
@@ -72,9 +48,24 @@ VkLogicalDeviceProvider::createDeviceQueueCreateInfo(std::vector<VkQueueFamilyPr
     return vector;
 }
 
-VkDeviceRepresentation *VkLogicalDeviceProvider::create(VkPhysicalDeviceWrapper *,
-                                                        std::vector<const char *>,
-                                                        std::vector<std::function<bool(VkQueueFamilyProperties)>>) {
-    return NULL;
+std::unique_ptr<VkLogicalDeviceRepresentation>
+VkLogicalDeviceProvider::create(VkPhysicalDeviceWrapper *const vkPhysicalDeviceWrapper,
+                                std::vector<const char *>,
+                                std::vector<std::function<bool(VkQueueFamilyProperties)>>) {
+
+    auto vkDevice = new VkDevice;
+
+    VkResult deviceCreationResult = vkCreateDevice(*vkPhysicalDeviceWrapper->getVkPhysicalDevice(),
+                                                   nullptr,
+                                                   nullptr,
+                                                   vkDevice);
+
+    if (deviceCreationResult != VK_SUCCESS) {
+        std::string errorMessageToThrow = formErrorMessageFromVkResult("Can't create logical device, vkResult is ",
+                                                                       deviceCreationResult);
+        throw std::runtime_error(errorMessageToThrow);
+    }
+
+    return std::unique_ptr<VkLogicalDeviceRepresentation>(new VkLogicalDeviceRepresentation());
 }
 

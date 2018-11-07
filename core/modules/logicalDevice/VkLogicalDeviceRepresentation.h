@@ -6,9 +6,9 @@
 
 #include <vulkan.h>
 
-class VkDeviceRepresentation {
+class VkLogicalDeviceRepresentation {
 public:
-    VkDeviceRepresentation(VkDevice *, int graphicsQueueIdx);
+    VkLogicalDeviceRepresentation(VkDevice *, int graphicsQueueIdx);
 
     VkDevice *getVkLogicalDevice() const;
 

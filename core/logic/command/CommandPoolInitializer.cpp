@@ -2,7 +2,7 @@
 #include "../queueFamilies/QueueFamiliesController.h"
 #include <stdexcept>
 
-VkCommandPool *CommandPoolInitializer::createCommandPool(VkDeviceRepresentation *deviceRepresentation) {
+VkCommandPool *CommandPoolInitializer::createCommandPool(VkLogicalDeviceRepresentation *deviceRepresentation) {
     VkCommandPoolCreateInfo cmdPoolCreateInfo = {
             VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
             NULL,

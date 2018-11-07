@@ -8,8 +8,8 @@
 #include "../../modules/physicalDevice/VkPhysicalDeviceWrapper.h"
 #include "../../modules/vkinstance/VkInstanceWrapper.h"
 #include "../../initrequestmodel/VulkanInitalizationRequestModel.h"
-#include "VkPhysicalDeviceExtensionsExtractor.h"
-#include "VkPhysicalDevicePropertiesExtractor.h"
+#include "propertiesExtractors/VkPhysicalDeviceExtensionsExtractor.h"
+#include "propertiesExtractors/VkPhysicalDevicePropertiesExtractor.h"
 
 class VkPhysicalDeviceDetector {
     friend class IocContainer;

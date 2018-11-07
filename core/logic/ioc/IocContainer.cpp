@@ -22,8 +22,8 @@ std::shared_ptr<VkPhysicalDeviceDetector> IocContainer::getVkPhysicalDeviceDetec
     return vkPhysicalDeviceDetector;
 }
 
-const VkLogicalDeviceProvider* IocContainer::getVkLogicalDeviceProvider() {
-    return &vkLogicalDeviceProvider;
+std::shared_ptr<VkLogicalDeviceProvider> IocContainer::getVkLogicalDeviceProvider() {
+    return vkLogicalDeviceProvider;
 }
 
 std::shared_ptr<VkInstanceLayersProvider> IocContainer::getVkInstanceLayersProvider() {
@@ -40,5 +40,6 @@ IocContainer::IocContainer() {
     this->vkPhysicalDeviceDetector = std::shared_ptr<VkPhysicalDeviceDetector>(new VkPhysicalDeviceDetector(deviceExtensionsExtractor, devicePropertiesExtractor));
     this->vkInstanceLayersProvider = std::shared_ptr<VkInstanceLayersProvider>(new VkInstanceLayersProvider());
     this->instanceCreateInfoProvider = std::shared_ptr<VkInstanceCreateInfoProvider>(new VkInstanceCreateInfoProvider(vkInstanceLayersProvider));
+    this->vkLogicalDeviceProvider = std::shared_ptr<VkLogicalDeviceProvider>(new VkLogicalDeviceProvider);
     this->vkInstanceProvider = std::make_shared<VkInstanceProvider>(instanceCreateInfoProvider);
 }

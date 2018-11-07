@@ -5,7 +5,7 @@
 #include <vulkan.h>
 #include <vector>
 #include "../../modules/swapChain/SwapChainHandler.h"
-#include "../../modules/logicalDevice/VkDeviceRepresentation.h"
+#include "../../modules/logicalDevice/VkLogicalDeviceRepresentation.h"
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -25,7 +25,7 @@ synchronize the presentation of images with the refresh rate of the screen
 class VkSwapChainManager {
     public:
         static VkSwapChainManager &getInstance();
-        SwapChainHandler* createSwapChain(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkDeviceRepresentation* logicalDevice);
+        SwapChainHandler* createSwapChain(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, VkLogicalDeviceRepresentation* logicalDevice);
         SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);
     private:
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);

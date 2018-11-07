@@ -69,7 +69,7 @@ set(SOURCE_FILES
         ${VULKAN_INCLUDE_DIR}
         ${GLWF_INCLUDE_DIR}
         ${GLM_INCLUDE_DIR}
-        ${SOURCES} core/modules/physicalDevice/VkPhysicalDeviceWrapper.cpp core/modules/physicalDevice/VkPhysicalDeviceWrapper.h core/modules/layersAndExtensions/LayersPrintUtil.h core/logic/ioc/IocContainer.cpp core/logic/ioc/IocContainer.h core/initrequestmodel/VulkanInitalizationRequestModel.h core/modules/vkinstance/VkInstanceWrapper.cpp core/modules/vkinstance/VkInstanceWrapper.h core/logic/physicalDevice/VkPhysicalDeviceExtensionsExtractor.cpp core/logic/physicalDevice/VkPhysicalDeviceExtensionsExtractor.h core/logic/physicalDevice/VkPhysicalDevicePropertiesExtractor.cpp core/logic/physicalDevice/VkPhysicalDevicePropertiesExtractor.h)
+        ${SOURCES} core/modules/physicalDevice/VkPhysicalDeviceWrapper.cpp core/modules/physicalDevice/VkPhysicalDeviceWrapper.h core/modules/layersAndExtensions/LayersPrintUtil.h core/logic/ioc/IocContainer.cpp core/logic/ioc/IocContainer.h core/initrequestmodel/VulkanInitalizationRequestModel.h core/modules/vkinstance/VkInstanceWrapper.cpp core/modules/vkinstance/VkInstanceWrapper.h core/logic/physicalDevice/propertiesExtractors/VkPhysicalDeviceExtensionsExtractor.cpp core/logic/physicalDevice/propertiesExtractors/VkPhysicalDeviceExtensionsExtractor.h core/logic/physicalDevice/propertiesExtractors/VkPhysicalDevicePropertiesExtractor.cpp core/logic/physicalDevice/propertiesExtractors/VkPhysicalDevicePropertiesExtractor.h core/utils/VulkanInitializationErrorMessageUtils.h core/logic/logicalDevice/createInfo/VkLogicalDeviceCreateInfoProvider.cpp core/logic/logicalDevice/createInfo/VkLogicalDeviceCreateInfoProvider.h)
 
 add_executable(VulkanInitializationLib ${SOURCE_FILES})
 

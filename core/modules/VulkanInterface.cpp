@@ -14,7 +14,7 @@ VkInstance* VulkanInterface::getVulkanInstance() {
 
 VulkanInterface::VulkanInterface(
         VkInstance* vulkanInstance,
-        VkDeviceRepresentation* logicalDevice, VkSurfaceKHR* vkSurfaceKHR, SwapChainHandler* swapChainHandler, GraphicsPipelineInterface* graphicsPipeline,
+        VkLogicalDeviceRepresentation* logicalDevice, VkSurfaceKHR* vkSurfaceKHR, SwapChainHandler* swapChainHandler, GraphicsPipelineInterface* graphicsPipeline,
         VkRenderPass vkRenderPass, std::vector<VkFramebuffer>* swapChainFramebuffers, VkCommandPool commandPool, std::vector<VkCommandBuffer>* commandBuffers) {
     this->vulkanInstance = vulkanInstance;
 
