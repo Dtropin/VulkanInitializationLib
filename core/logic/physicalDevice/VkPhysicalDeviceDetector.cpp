@@ -62,7 +62,7 @@ VkPhysicalDeviceWrapper *VkPhysicalDeviceDetector::selectAppropriateDevice(
                 devicePropertiesExtractor->getDeviceQueueFamilies(&candidate);
 
         if (hasDeviceRequiredQueues(supportedDeviceQueues, deviceRequirements.queueFamilyRequirementFunctions)) {
-            return new VkPhysicalDeviceWrapper(&candidate,
+            return new VkPhysicalDeviceWrapper(candidate,
                                                devicePropertiesExtractor->getMemoryProperties(candidate),
                                                supportedExtensions,
                                                supportedDeviceQueues,

@@ -6,8 +6,13 @@
 #define VULKANINITIALIZATIONLIB_VKLOGICALDEVICECREATEINFOPROVIDER_H
 
 
-class VkLogicalDeviceCreateInfoProvider {
+#include <vulkan_core.h>
+#include <functional>
 
+class VkLogicalDeviceCreateInfoProvider {
+public:
+    VkDeviceCreateInfo createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo>,
+                           std::vector<const char *> &deviceExtensionsToEnable);
 };
 
 

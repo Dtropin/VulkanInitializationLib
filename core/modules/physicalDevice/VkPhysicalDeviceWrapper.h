@@ -11,14 +11,14 @@
 class VkPhysicalDeviceWrapper {
 
 private:
-    VkPhysicalDevice *vkPhysicalDevice;
+    VkPhysicalDevice vkPhysicalDevice;
     VkPhysicalDeviceMemoryProperties *memoryProperties;
     std::vector<VkExtensionProperties> *supportedExtensions;
     std::vector<VkQueueFamilyProperties> *queueFamiliesProperties;
     VkPhysicalDeviceFeatures *deviceFeatures;
 
 public:
-    VkPhysicalDevice *getVkPhysicalDevice() const;
+    VkPhysicalDevice getVkPhysicalDevice() const;
 
     const VkPhysicalDeviceMemoryProperties* getMemoryProperties() const;
 
@@ -32,7 +32,7 @@ public:
 
     ~VkPhysicalDeviceWrapper();
 
-    VkPhysicalDeviceWrapper(VkPhysicalDevice *vkp, VkPhysicalDeviceMemoryProperties *memoryProperties,
+    VkPhysicalDeviceWrapper(VkPhysicalDevice vkp, VkPhysicalDeviceMemoryProperties *memoryProperties,
                             std::vector<VkExtensionProperties> *supportedExtensions,
                             std::vector<VkQueueFamilyProperties> *queueFamilyProperties,
                             VkPhysicalDeviceFeatures *deviceFeatures);

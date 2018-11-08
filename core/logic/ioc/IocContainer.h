@@ -29,6 +29,10 @@ public:
 private:
     IocContainer();
 
+    std::shared_ptr<VkLogicalDeviceCreateInfoProvider> vkLogicalDeviceCreateInfoProvider;
+
+    std::shared_ptr<VkLogicalDeviceQueueCreateInfoProvider> vkLogicalDeviceQueueCreateInfoProvider;
+
     std::shared_ptr<VkLogicalDeviceProvider> vkLogicalDeviceProvider;
 
     std::shared_ptr<VkPhysicalDeviceExtensionsExtractor> deviceExtensionsExtractor;

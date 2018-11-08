@@ -5,10 +5,12 @@
 #pragma once
 
 #include <vulkan.h>
+#include <vector>
+#include <memory>
 
 class VkLogicalDeviceRepresentation {
 public:
-    VkLogicalDeviceRepresentation(VkDevice *, int graphicsQueueIdx);
+    explicit VkLogicalDeviceRepresentation(VkDevice*);
 
     VkDevice *getVkLogicalDevice() const;
 
@@ -18,7 +20,7 @@ public:
 
 private:
     // physical device data
-    VkDevice *vkLogicalDevice;//interface to physical device
-   uint32_t graphicsQueueIdx; //Idx of graphics queue
+    VkDevice* vkLogicalDevice;//interface to physical device
+    uint32_t graphicsQueueIdx; //Idx of graphics queue
     uint32_t presentQueueIdx; //Idx of graphics queue
 };

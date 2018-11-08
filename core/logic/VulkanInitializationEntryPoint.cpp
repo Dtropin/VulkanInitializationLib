@@ -31,6 +31,14 @@ VulkanInitializationRequest debugRequest() {
 
     VulkanInitializationRequest::PhysicalDeviceRequirements pdr;
 
+    request.vkInstanceData.vkInstanceLayersToEnable = {
+            "VK_LAYER_LUNARG_api_dump"
+    };
+	request.vkInstanceData.appName = "123";
+	request.vkInstanceData.appVersion = 1;
+	request.vkInstanceData.engineName = "lalka";
+	request.vkInstanceData.engineVersion = 1;
+
     request.physicalDeviceRequirements.requiredDeviceExtensions = {
             //VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
@@ -57,10 +65,13 @@ VulkanInterface *VulkanInitializationEntryPoint::setupVulkanSystem(OutputWindowI
     std::shared_ptr<VkPhysicalDeviceDetector> vkPhysicalDeviceProvider = iocContainer->getVkPhysicalDeviceDetector();
     std::unique_ptr<VkPhysicalDeviceWrapper> appropriatePhysicalDevice = vkPhysicalDeviceProvider->findSatisfyingDevices(
             vkInstance.get(), vkInstanceLayers.get(), request.physicalDeviceRequirements);
-
     std::shared_ptr<VkLogicalDeviceProvider> vkLogicalDeviceProvider = iocContainer->getVkLogicalDeviceProvider();
-    vkLogicalDeviceProvider->create(appropriatePhysicalDevice, );
+    std::unique_ptr<VkLogicalDeviceRepresentation> vkLogicalDevice = vkLogicalDeviceProvider->create(
+            appropriatePhysicalDevice.get(),
+            &request.physicalDeviceRequirements.requiredDeviceExtensions,
+            request.physicalDeviceRequirements.queueFamilyRequirementFunctions);
 
+    //TODO Определится что же все таки делать со смарт пойнтерами, особенно unique
     /**
 
     VkDeviceRepresentation *logicalDevice = VkDeviceProvider

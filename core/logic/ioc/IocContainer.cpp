@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <memory>
+
 //
 // Created by User on 17.10.2018.
 //
@@ -37,9 +39,15 @@ std::shared_ptr<VkPhysicalDeviceExtensionsExtractor> IocContainer::getDeviceExte
 IocContainer::IocContainer() {
     this->deviceExtensionsExtractor = std::make_shared<VkPhysicalDeviceExtensionsExtractor>();
     this->devicePropertiesExtractor = std::make_shared<VkPhysicalDevicePropertiesExtractor>();
-    this->vkPhysicalDeviceDetector = std::shared_ptr<VkPhysicalDeviceDetector>(new VkPhysicalDeviceDetector(deviceExtensionsExtractor, devicePropertiesExtractor));
+    this->vkPhysicalDeviceDetector = std::shared_ptr<VkPhysicalDeviceDetector>(
+            new VkPhysicalDeviceDetector(deviceExtensionsExtractor, devicePropertiesExtractor));
     this->vkInstanceLayersProvider = std::shared_ptr<VkInstanceLayersProvider>(new VkInstanceLayersProvider());
-    this->instanceCreateInfoProvider = std::shared_ptr<VkInstanceCreateInfoProvider>(new VkInstanceCreateInfoProvider(vkInstanceLayersProvider));
-    this->vkLogicalDeviceProvider = std::shared_ptr<VkLogicalDeviceProvider>(new VkLogicalDeviceProvider);
+    this->instanceCreateInfoProvider = std::shared_ptr<VkInstanceCreateInfoProvider>(
+            new VkInstanceCreateInfoProvider(vkInstanceLayersProvider));
+    this->vkLogicalDeviceCreateInfoProvider = std::make_shared<VkLogicalDeviceCreateInfoProvider>();
+    this->vkLogicalDeviceQueueCreateInfoProvider = std::make_shared<VkLogicalDeviceQueueCreateInfoProvider>();
+    this->vkLogicalDeviceProvider = std::shared_ptr<VkLogicalDeviceProvider>(
+            new VkLogicalDeviceProvider(vkLogicalDeviceCreateInfoProvider,
+                                        vkLogicalDeviceQueueCreateInfoProvider));
     this->vkInstanceProvider = std::make_shared<VkInstanceProvider>(instanceCreateInfoProvider);
 }

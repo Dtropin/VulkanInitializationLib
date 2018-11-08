@@ -8,22 +8,24 @@
 #include <atomic>
 #include "../../modules/logicalDevice/VkLogicalDeviceRepresentation.h"
 #include "../../modules/physicalDevice/VkPhysicalDeviceWrapper.h"
+#include "createInfo/VkLogicalDeviceCreateInfoProvider.h"
+#include "createInfo/VkLogicalDeviceQueueCreateInfoProvider.h"
 
 class VkLogicalDeviceProvider {
     friend class IocContainer;
 
 public:
-    std::unique_ptr<VkLogicalDeviceRepresentation> create(VkPhysicalDeviceWrapper*,
-                                                std::vector<const char *>,
-                                                std::vector<std::function<bool(VkQueueFamilyProperties)>>);
+    std::unique_ptr<VkLogicalDeviceRepresentation> create(VkPhysicalDeviceWrapper *,
+                                                          std::vector<const char *> *,
+                                                          std::vector<std::function<bool(VkQueueFamilyProperties)>>) const;
 
 private:
-    VkLogicalDeviceProvider() = default;
+    explicit VkLogicalDeviceProvider(std::shared_ptr<VkLogicalDeviceCreateInfoProvider>,
+                                     std::shared_ptr<VkLogicalDeviceQueueCreateInfoProvider>);
 
-    VkDeviceCreateInfo *
-    createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo *>, std::vector<const char *> &deviceExtensionsToEnable);
+    VkDevice* createLogicalDevice(VkDeviceCreateInfo const * deviceCreateInfo,
+                                                  VkPhysicalDevice vkPhysicalDevice) const;
 
-    std::vector<VkDeviceQueueCreateInfo *>
-    createDeviceQueueCreateInfo(std::vector<VkQueueFamilyProperties> *queueFamiliesProperties,
-                                std::vector<std::function<bool(VkQueueFamilyProperties)>> queueFamilyPeekFunction);
+    std::shared_ptr<VkLogicalDeviceCreateInfoProvider> vkLogicalDeviceCreateInfoProvider;
+    std::shared_ptr<VkLogicalDeviceQueueCreateInfoProvider> vkLogicalDeviceQueueCreateInfoProvider;
 };

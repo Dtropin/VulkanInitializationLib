@@ -4,7 +4,7 @@
 
 #include "VkPhysicalDeviceWrapper.h"
 
-VkPhysicalDeviceWrapper::VkPhysicalDeviceWrapper(VkPhysicalDevice* vkp,
+VkPhysicalDeviceWrapper::VkPhysicalDeviceWrapper(VkPhysicalDevice vkp,
                                                                VkPhysicalDeviceMemoryProperties* memoryProperties,
                                                                std::vector<VkExtensionProperties>* supportedExtensions,
                                                                std::vector<VkQueueFamilyProperties>* queueFamilyProperties,
@@ -20,7 +20,7 @@ VkPhysicalDeviceWrapper::~VkPhysicalDeviceWrapper() {
     supportedExtensions->clear();
 }
 
-VkPhysicalDevice *VkPhysicalDeviceWrapper::getVkPhysicalDevice() const {
+VkPhysicalDevice VkPhysicalDeviceWrapper::getVkPhysicalDevice() const {
     return vkPhysicalDevice;
 }
 
