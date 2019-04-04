@@ -13,7 +13,7 @@
 
 using namespace std;
 
-std::unique_ptr<VkPhysicalDeviceWrapper> VkPhysicalDeviceDetector::findSatisfyingDevices(
+std::shared_ptr<VkPhysicalDeviceWrapper> VkPhysicalDeviceDetector::findSatisfyingDevices(
         VkInstance * const vkInstance,
         VkInstanceLayersWrapper* const instanceLayers,
         VulkanInitializationRequest::PhysicalDeviceRequirements deviceRequirements) {

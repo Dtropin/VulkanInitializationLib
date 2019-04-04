@@ -11,7 +11,7 @@
 #include "../../utils/VulkanInitializationErrorMessageUtils.h"
 #include "../queueFamilies/QueueFamiliesController.h"
 
-std::unique_ptr<VkLogicalDeviceRepresentation>
+std::shared_ptr<VkLogicalDeviceRepresentation>
 VkLogicalDeviceProvider::create(VkPhysicalDeviceWrapper *const vkPhysicalDeviceWrapper,
                                 std::vector<const char *> *const deviceExtensionsToEnable,
                                 std::vector<std::function<bool(VkQueueFamilyProperties)>> queueFamilyPeekFunction) const {
@@ -32,18 +32,18 @@ VkLogicalDeviceProvider::create(VkPhysicalDeviceWrapper *const vkPhysicalDeviceW
 VkDevice* VkLogicalDeviceProvider::createLogicalDevice(VkDeviceCreateInfo const * deviceCreateInfo,
                                              VkPhysicalDevice vkPhysicalDevice) const {
     auto vkDevice = new VkDevice;
-
-    VkResult deviceCreationResult = vkCreateDevice(vkPhysicalDevice,
-                                                   deviceCreateInfo,
-                                                   nullptr,
-                                                   vkDevice);
+	
+	VkResult deviceCreationResult = vkCreateDevice(vkPhysicalDevice,
+			deviceCreateInfo,
+			nullptr,
+			vkDevice);
 
     if (deviceCreationResult != VK_SUCCESS) {
         std::string errorMessageToThrow = formErrorMessageFromVkResult("Can't create logical device, vkResult is ",
                                                                        deviceCreationResult);
         throw std::runtime_error(errorMessageToThrow);
     }
-
+	
     return vkDevice;
 }
 

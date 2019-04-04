@@ -10,11 +10,11 @@ VkInstanceProvider::VkInstanceProvider(std::shared_ptr<VkInstanceCreateInfoProvi
         vkInstanceCreateInfoProvider(std::move(sptr)) {}
 
 //VkInstance - primary object that required to build application. It stores all app states
-std::unique_ptr<VkInstance> VkInstanceProvider::create(OutputWindowInterface *windowInterface,
+std::shared_ptr<VkInstance> VkInstanceProvider::create(OutputWindowInterface *windowInterface,
                                                        VulkanInitializationRequest::VkInstanceData* vkInstanceData) const {
     auto *instance = new VkInstance;
 
-    std::unique_ptr<VkInstanceCreateInfo> vkInstanceCreateInfo =
+    std::shared_ptr<VkInstanceCreateInfo> vkInstanceCreateInfo =
             vkInstanceCreateInfoProvider->createVkInstanceCreateInfo(windowInterface, vkInstanceData);
 
     if (vkCreateInstance(vkInstanceCreateInfo.get(), nullptr, instance) != VK_SUCCESS)

@@ -15,7 +15,7 @@ class VkPhysicalDeviceDetector {
     friend class IocContainer;
 
 public:
-    std::unique_ptr<VkPhysicalDeviceWrapper> findSatisfyingDevices(VkInstance* const,
+    std::shared_ptr<VkPhysicalDeviceWrapper> findSatisfyingDevices(VkInstance* const,
                                                    VkInstanceLayersWrapper* const,
                                                    VulkanInitializationRequest::PhysicalDeviceRequirements);
     ~VkPhysicalDeviceDetector() = default;

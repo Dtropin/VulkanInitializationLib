@@ -11,8 +11,8 @@
 
 class VkLogicalDeviceQueueCreateInfoProvider {
 public:
-    std::vector<VkDeviceQueueCreateInfo> createDeviceQueueCreateInfo(
-            std::vector<VkQueueFamilyProperties> *queueFamiliesProperties,
+    std::vector<VkDeviceQueueCreateInfo>* createDeviceQueueCreateInfo(
+            std::vector<VkQueueFamilyProperties> *queueFamiliesPropertiesSupportedByDevice,
             std::vector<std::function<bool(VkQueueFamilyProperties)>> queueFamilyPeekFunction);
 };
 

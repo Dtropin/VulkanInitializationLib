@@ -57,25 +57,24 @@ VulkanInterface *VulkanInitializationEntryPoint::setupVulkanSystem(OutputWindowI
     //TODO Валидатор для instance layers, поддерживаются ли они системой
 
     std::shared_ptr<VkInstanceLayersProvider> vkInstanceLayersProvider = iocContainer->getVkInstanceLayersProvider();
-    std::unique_ptr<VkInstanceLayersWrapper> vkInstanceLayers = vkInstanceLayersProvider->getInstanceLayersAndExtensions();
+    std::shared_ptr<VkInstanceLayersWrapper> vkInstanceLayers = vkInstanceLayersProvider->getInstanceLayersAndExtensions();
 
     std::shared_ptr<VkInstanceProvider> vkInstanceProvider = iocContainer->getVkInstanceProvider();
-    std::unique_ptr<VkInstance> vkInstance = vkInstanceProvider->create(windowInterface, &request.vkInstanceData);
+    std::shared_ptr<VkInstance> vkInstance = vkInstanceProvider->create(windowInterface, &request.vkInstanceData);
 
     std::shared_ptr<VkPhysicalDeviceDetector> vkPhysicalDeviceProvider = iocContainer->getVkPhysicalDeviceDetector();
-    std::unique_ptr<VkPhysicalDeviceWrapper> appropriatePhysicalDevice = vkPhysicalDeviceProvider->findSatisfyingDevices(
+    std::shared_ptr<VkPhysicalDeviceWrapper> appropriatePhysicalDevice = vkPhysicalDeviceProvider->findSatisfyingDevices(
             vkInstance.get(), vkInstanceLayers.get(), request.physicalDeviceRequirements);
+
     std::shared_ptr<VkLogicalDeviceProvider> vkLogicalDeviceProvider = iocContainer->getVkLogicalDeviceProvider();
-    std::unique_ptr<VkLogicalDeviceRepresentation> vkLogicalDevice = vkLogicalDeviceProvider->create(
+
+    std::shared_ptr<VkLogicalDeviceRepresentation> vkLogicalDevice = vkLogicalDeviceProvider->create(
             appropriatePhysicalDevice.get(),
             &request.physicalDeviceRequirements.requiredDeviceExtensions,
             request.physicalDeviceRequirements.queueFamilyRequirementFunctions);
 
     //TODO Определится что же все таки делать со смарт пойнтерами, особенно unique
     /**
-
-    VkDeviceRepresentation *logicalDevice = VkDeviceProvider
-            .getOrCreate(availiablePhysicalDevices, deviceExtensionsToEnable, queueFamilyPeekFunction);
 
     VkCommandPool *commandPool = CommandPoolInitializer::
     createCommandPool(logicalDevice);
@@ -101,5 +100,10 @@ VulkanInterface *VulkanInitializationEntryPoint::setupVulkanSystem(OutputWindowI
 
     return new VulkanInterface(vkInstance, logicalDevice, vkSurface, swapchain, pipelineLayout, renderPass,
                                frameBuffers, *commandPool, commandBuffers);**/
+
+
+    vkDestroyDevice(*vkLogicalDevice->getVkLogicalDevice(), nullptr);
+    vkDestroyInstance(*vkInstance, nullptr);
+
     return nullptr;
 }

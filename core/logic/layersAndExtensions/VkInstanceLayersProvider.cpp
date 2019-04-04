@@ -8,14 +8,14 @@
 #include "VkInstanceLayersProvider.h"
 #include "../../modules/layersAndExtensions/LayersPrintUtil.h"
 
-std::unique_ptr<VkInstanceLayersWrapper> VkInstanceLayersProvider::getInstanceLayersAndExtensions() {
+std::shared_ptr<VkInstanceLayersWrapper> VkInstanceLayersProvider::getInstanceLayersAndExtensions() {
     uint32_t instanceLayersCount = getInstanceLayersCount();
 
     std::vector<VkLayerProperties>* instanceLayersProperties = getInstanceLayerProperties(instanceLayersCount);
 
     std::vector<LayerAndItsExtensions>* layersAndItsExtensions = getExtensionsForSpecifiedLayers(instanceLayersProperties);
 
-    return std::make_unique<VkInstanceLayersWrapper>(layersAndItsExtensions);
+    return std::make_shared<VkInstanceLayersWrapper>(layersAndItsExtensions);
 }
 
 uint32_t VkInstanceLayersProvider::getInstanceLayersCount() {

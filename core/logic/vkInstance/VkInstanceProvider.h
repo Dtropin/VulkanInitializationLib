@@ -18,7 +18,7 @@ class VkInstanceProvider {
 public:
     explicit VkInstanceProvider(std::shared_ptr<VkInstanceCreateInfoProvider>);
 
-    std::unique_ptr<VkInstance> create(OutputWindowInterface *windowInterface,
+    std::shared_ptr<VkInstance> create(OutputWindowInterface *windowInterface,
                                        VulkanInitializationRequest::VkInstanceData* vkInstanceData) const;
 
 private:

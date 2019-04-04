@@ -15,7 +15,7 @@ class VkLogicalDeviceProvider {
     friend class IocContainer;
 
 public:
-    std::unique_ptr<VkLogicalDeviceRepresentation> create(VkPhysicalDeviceWrapper *,
+    std::shared_ptr<VkLogicalDeviceRepresentation> create(VkPhysicalDeviceWrapper *,
                                                           std::vector<const char *> *,
                                                           std::vector<std::function<bool(VkQueueFamilyProperties)>>) const;
 

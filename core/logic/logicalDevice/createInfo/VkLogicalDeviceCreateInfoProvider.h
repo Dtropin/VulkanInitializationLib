@@ -11,7 +11,7 @@
 
 class VkLogicalDeviceCreateInfoProvider {
 public:
-    VkDeviceCreateInfo createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo>,
+    VkDeviceCreateInfo createDeviceCreateInfo(std::vector<VkDeviceQueueCreateInfo>*,
                            std::vector<const char *> &deviceExtensionsToEnable);
 };
 

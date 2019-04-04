@@ -13,7 +13,7 @@ class VkInstanceLayersProvider {
     friend class IocContainer;
 
 public:
-    std::unique_ptr<VkInstanceLayersWrapper> getInstanceLayersAndExtensions();
+    std::shared_ptr<VkInstanceLayersWrapper> getInstanceLayersAndExtensions();
 
 private:
     explicit VkInstanceLayersProvider();
